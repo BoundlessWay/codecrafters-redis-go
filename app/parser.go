@@ -32,7 +32,10 @@ func parseArrayContent(reader *bufio.Reader) ([]string, error) {
 
 func readBulkString(reader *bufio.Reader) (string, error) {
 	prefix, err := reader.ReadByte()
-	if err != nil || prefix != '$' {
+	if err != nil {
+		return "", err
+	}
+	if prefix != '$' {
 		return "", fmt.Errorf("expected '$'")
 	}
 
@@ -50,7 +53,9 @@ func readBulkString(reader *bufio.Reader) (string, error) {
 		return "", err
 	}
 
-	reader.ReadString('\n')
+	if err := readCRLF(reader); err != nil {
+		return "", err
+	}
 	return string(data), nil
 }
 
@@ -60,4 +65,19 @@ func readInt(reader *bufio.Reader) (int, error) {
 		return 0, err
 	}
 	return strconv.Atoi(strings.TrimSpace(line))
+}
+
+func readCRLF(reader *bufio.Reader) error {
+	b1, err := reader.ReadByte()
+	if err != nil {
+		return err
+	}
+	b2, err := reader.ReadByte()
+	if err != nil {
+		return err
+	}
+	if b1 != '\r' || b2 != '\n' {
+		return fmt.Errorf("expected CRLF")
+	}
+	return nil
 }
