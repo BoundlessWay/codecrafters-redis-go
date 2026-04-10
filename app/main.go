@@ -9,6 +9,7 @@ var (
 	serverHost = "0.0.0.0"
 	serverPort = "6379"
 	store      = make(map[string]string)
+	expiryAtMs = make(map[string]int64)
 	storeMu    sync.RWMutex
 )
 
