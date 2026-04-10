@@ -5,11 +5,16 @@ import (
 	"sync"
 )
 
+type storeEntry struct {
+	value      string
+	expireAtMs int64
+	hasExpiry  bool
+}
+
 var (
 	serverHost = "0.0.0.0"
 	serverPort = "6379"
-	store      = make(map[string]string)
-	expiryAtMs = make(map[string]int64)
+	store      = make(map[string]storeEntry)
 	storeMu    sync.RWMutex
 )
 

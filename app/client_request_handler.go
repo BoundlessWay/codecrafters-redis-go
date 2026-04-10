@@ -59,6 +59,7 @@ func handleCommand(conn net.Conn, args []string) {
 		key, value := args[1], args[2]
 
 		var expireAt int64
+		hasExpiry := false
 		if len(args) == 5 {
 			option := strings.ToUpper(args[3])
 			ttlValue, err := strconv.ParseInt(args[4], 10, 64)
@@ -78,14 +79,14 @@ func handleCommand(conn net.Conn, args []string) {
 				return
 			}
 			expireAt = time.Now().UnixMilli() + ttlMs
+			hasExpiry = true
 		}
 
 		storeMu.Lock()
-		store[key] = value
-		if expireAt > 0 {
-			expiryAtMs[key] = expireAt
-		} else {
-			delete(expiryAtMs, key)
+		store[key] = storeEntry{
+			value:      value,
+			expireAtMs: expireAt,
+			hasExpiry:  hasExpiry,
 		}
 		storeMu.Unlock()
 		fmt.Fprint(conn, "+OK\r\n")
@@ -96,24 +97,22 @@ func handleCommand(conn net.Conn, args []string) {
 		}
 		key := args[1]
 		storeMu.RLock()
-		value, exists := store[key]
-		expireAt, hasExpiry := expiryAtMs[key]
+		entry, exists := store[key]
 		storeMu.RUnlock()
 		if !exists {
 			fmt.Fprint(conn, "$-1\r\n")
 			return
 		}
 
-		if hasExpiry && time.Now().UnixMilli() >= expireAt {
+		if entry.hasExpiry && time.Now().UnixMilli() >= entry.expireAtMs {
 			storeMu.Lock()
 			delete(store, key)
-			delete(expiryAtMs, key)
 			storeMu.Unlock()
 			fmt.Fprint(conn, "$-1\r\n")
 			return
 		}
 
-		fmt.Fprintf(conn, "$%d\r\n%s\r\n", len(value), value)
+		fmt.Fprintf(conn, "$%d\r\n%s\r\n", len(entry.value), entry.value)
 	default:
 		fmt.Fprintf(conn, "-ERR unknown command '%s'\r\n", cmd)
 	}
