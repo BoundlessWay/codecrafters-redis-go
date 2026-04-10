@@ -42,12 +42,13 @@ func handleCommand(conn net.Conn, args []string) {
 	}
 
 	cmd := strings.ToUpper(args[0])
+	
 	switch cmd {
 	case "PING":
 		conn.Write([]byte("+PONG\r\n"))
 	case "ECHO":
 		if len(args) > 1 {
-			fmt.Fprintf(conn, "$%d\r\n%s\r\n", len(args[1]), args[1])
+			writeBulkString(conn, args[1])
 		}
 	default:
 		fmt.Fprintf(conn, "-ERR unknown command '%s'\r\n", cmd)
@@ -67,21 +68,46 @@ func parseArrayContent(rd *bufio.Reader) ([]string, error) {
     }
 
 	args := make([]string, count)
+
 	for i := 0; i < count; i++ {
-		prefix, _ := rd.ReadByte()
-
-		if prefix != '$' {
-			return nil, fmt.Errorf("expected $")
+		// Each element is expected to be a Bulk String
+		arg, err := readBulkString(rd)
+		if err != nil {
+			return nil, err
 		}
-
-		size, _ := readInt(rd)
-		data := make([]byte, size)
-		io.ReadFull(rd, data)
-		rd.ReadString('\n') // Bỏ qua CRLF (\r\n)
-
-		args[i] = string(data)
+		args[i] = arg
 	}
+
 	return args, nil
+}
+
+func readBulkString(rd *bufio.Reader) (string, error) {
+
+	prefix, err := rd.ReadByte()
+	if err != nil || prefix != '$' {
+		return "", fmt.Errorf("expected '$'")
+	}
+
+	size, err := readInt(rd)
+	if err != nil {
+		return "", err
+	}
+
+	// Handle Null Bulk String ($-1)
+	if size == -1 {
+		return "", nil
+	}
+
+	// Read content (Binary Safe)
+	data := make([]byte, size)
+	if _, err := io.ReadFull(rd, data); err != nil {
+		return "", err
+	}
+
+	// Skip \r\n at the end of each Bulk String
+	rd.ReadString('\n')
+
+	return string(data), nil
 }
 
 func readInt(rd *bufio.Reader) (int, error) {
@@ -92,6 +118,11 @@ func readInt(rd *bufio.Reader) (int, error) {
 	}
 
 	return strconv.Atoi(strings.TrimSpace(line))
+}
+
+func writeBulkString(conn net.Conn, s string) {
+	// Return in the format: $<length>\r\n<data>\r\n
+	fmt.Fprintf(conn, "$%d\r\n%s\r\n", len(s), s)
 }
 
 
