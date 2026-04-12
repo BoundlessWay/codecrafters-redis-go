@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>graphify - graphify-out/graph.html</title>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f1a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; height: 100vh; overflow: hidden; }
+  #graph { flex: 1; }
+  #sidebar { width: 280px; background: #1a1a2e; border-left: 1px solid #2a2a4e; display: flex; flex-direction: column; overflow: hidden; }
+  #search-wrap { padding: 12px; border-bottom: 1px solid #2a2a4e; }
+  #search { width: 100%; background: #0f0f1a; border: 1px solid #3a3a5e; color: #e0e0e0; padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none; }
+  #search:focus { border-color: #4E79A7; }
+  #search-results { max-height: 140px; overflow-y: auto; padding: 4px 12px; border-bottom: 1px solid #2a2a4e; display: none; }
+  .search-item { padding: 4px 6px; cursor: pointer; border-radius: 4px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-item:hover { background: #2a2a4e; }
+  #info-panel { padding: 14px; border-bottom: 1px solid #2a2a4e; min-height: 140px; }
+  #info-panel h3 { font-size: 13px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  #info-content { font-size: 13px; color: #ccc; line-height: 1.6; }
+  #info-content .field { margin-bottom: 5px; }
+  #info-content .field b { color: #e0e0e0; }
+  #info-content .empty { color: #555; font-style: italic; }
+  .neighbor-link { display: block; padding: 2px 6px; margin: 2px 0; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid #333; }
+  .neighbor-link:hover { background: #2a2a4e; }
+  #neighbors-list { max-height: 160px; overflow-y: auto; margin-top: 4px; }
+  #legend-wrap { flex: 1; overflow-y: auto; padding: 12px; }
+  #legend-wrap h3 { font-size: 13px; color: #aaa; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  .legend-item:hover { background: #2a2a4e; padding-left: 4px; }
+  .legend-item.dimmed { opacity: 0.35; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .legend-count { color: #666; font-size: 11px; }
+  #stats { padding: 10px 14px; border-top: 1px solid #2a2a4e; font-size: 11px; color: #555; }
+</style>
+</head>
+<body>
+<div id="graph"></div>
+<div id="sidebar">
+  <div id="search-wrap">
+    <input id="search" type="text" placeholder="Search nodes..." autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <div id="info-panel">
+    <h3>Node Info</h3>
+    <div id="info-content"><span class="empty">Click a node to inspect it</span></div>
+  </div>
+  <div id="legend-wrap">
+    <h3>Communities</h3>
+    <div id="legend"></div>
+  </div>
+  <div id="stats">47 nodes &middot; 65 edges &middot; 8 communities</div>
+</div>
+<script>
+const RAW_NODES = [{"id": "client_request_handler", "label": "client_request_handler.go", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "client_request_handler.go", "community": 0, "community_name": "Server core and connections", "source_file": "app\\client_request_handler.go", "file_type": "code", "degree": 2}, {"id": "client_request_handler_handleclient", "label": "handleClient()", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "handleClient()", "community": 0, "community_name": "Server core and connections", "source_file": "app\\client_request_handler.go", "file_type": "code", "degree": 1}, {"id": "commands", "label": "commands.go", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 35.7, "font": {"size": 12, "color": "#ffffff"}, "title": "commands.go", "community": 3, "community_name": "Command dispatch", "source_file": "app\\commands.go", "file_type": "code", "degree": 6}, {"id": "commands_handlecommand", "label": "handleCommand()", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "handleCommand()", "community": 3, "community_name": "Command dispatch", "source_file": "app\\commands.go", "file_type": "code", "degree": 3}, {"id": "commands_handleset", "label": "handleSet()", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "handleSet()", "community": 3, "community_name": "Command dispatch", "source_file": "app\\commands.go", "file_type": "code", "degree": 3}, {"id": "commands_handleget", "label": "handleGet()", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "handleGet()", "community": 3, "community_name": "Command dispatch", "source_file": "app\\commands.go", "file_type": "code", "degree": 2}, {"id": "commands_parseexpirymillis", "label": "parseExpiryMillis()", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "parseExpiryMillis()", "community": 3, "community_name": "Command dispatch", "source_file": "app\\commands.go", "file_type": "code", "degree": 2}, {"id": "connection", "label": "connection.go", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "connection.go", "community": 0, "community_name": "Server core and connections", "source_file": "app\\connection.go", "file_type": "code", "degree": 3}, {"id": "connection_bind", "label": "bind()", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "bind()", "community": 0, "community_name": "Server core and connections", "source_file": "app\\connection.go", "file_type": "code", "degree": 1}, {"id": "connection_handleconnections", "label": "handleConnections()", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "handleConnections()", "community": 0, "community_name": "Server core and connections", "source_file": "app\\connection.go", "file_type": "code", "degree": 1}, {"id": "main", "label": "main.go", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "main.go", "community": 0, "community_name": "Server core and connections", "source_file": "app\\main.go", "file_type": "code", "degree": 3}, {"id": "app_storeentry", "label": "storeEntry", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "storeEntry", "community": 0, "community_name": "Server core and connections", "source_file": "app\\main.go", "file_type": "code", "degree": 1}, {"id": "main_main", "label": "main()", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "main()", "community": 0, "community_name": "Server core and connections", "source_file": "app\\main.go", "file_type": "code", "degree": 1}, {"id": "parser", "label": "parser.go", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 35.7, "font": {"size": 12, "color": "#ffffff"}, "title": "parser.go", "community": 4, "community_name": "RESP parsing", "source_file": "app\\parser.go", "file_type": "code", "degree": 6}, {"id": "parser_parsearraycontent", "label": "parseArrayContent()", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "parseArrayContent()", "community": 4, "community_name": "RESP parsing", "source_file": "app\\parser.go", "file_type": "code", "degree": 3}, {"id": "parser_readbulkstring", "label": "readBulkString()", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 27.1, "font": {"size": 12, "color": "#ffffff"}, "title": "readBulkString()", "community": 4, "community_name": "RESP parsing", "source_file": "app\\parser.go", "file_type": "code", "degree": 4}, {"id": "parser_readint", "label": "readInt()", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "readInt()", "community": 4, "community_name": "RESP parsing", "source_file": "app\\parser.go", "file_type": "code", "degree": 3}, {"id": "parser_readcrlf", "label": "readCRLF()", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "readCRLF()", "community": 4, "community_name": "RESP parsing", "source_file": "app\\parser.go", "file_type": "code", "degree": 2}, {"id": "resp_writer", "label": "resp_writer.go", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 31.4, "font": {"size": 12, "color": "#ffffff"}, "title": "resp_writer.go", "community": 5, "community_name": "RESP encoding", "source_file": "app\\resp_writer.go", "file_type": "code", "degree": 5}, {"id": "resp_writer_writesimplestring", "label": "writeSimpleString()", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "writeSimpleString()", "community": 5, "community_name": "RESP encoding", "source_file": "app\\resp_writer.go", "file_type": "code", "degree": 1}, {"id": "resp_writer_writebulkstring", "label": "writeBulkString()", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "writeBulkString()", "community": 5, "community_name": "RESP encoding", "source_file": "app\\resp_writer.go", "file_type": "code", "degree": 1}, {"id": "resp_writer_writewrongargcount", "label": "writeWrongArgCount()", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "writeWrongArgCount()", "community": 5, "community_name": "RESP encoding", "source_file": "app\\resp_writer.go", "file_type": "code", "degree": 1}, {"id": "resp_writer_writeerror", "label": "writeError()", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "writeError()", "community": 5, "community_name": "RESP encoding", "source_file": "app\\resp_writer.go", "file_type": "code", "degree": 1}, {"id": "cli_mode_test", "label": "cli_mode_test.go", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "cli_mode_test.go", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 7}, {"id": "cli_mode_test_testrediscliflow", "label": "TestRedisCLIFlow()", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 31.4, "font": {"size": 12, "color": "#ffffff"}, "title": "TestRedisCLIFlow()", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 5}, {"id": "cli_mode_test_waitforserverport", "label": "waitForServerPort()", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "waitForServerPort()", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 2}, {"id": "cli_mode_test_runrediscli", "label": "runRedisCLI()", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 27.1, "font": {"size": 12, "color": "#ffffff"}, "title": "runRedisCLI()", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 4}, {"id": "cli_mode_test_assertcliequal", "label": "assertCLIEqual()", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "assertCLIEqual()", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 3}, {"id": "cli_mode_test_assertclicontains", "label": "assertCLIContains()", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "assertCLIContains()", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 3}, {"id": "cli_mode_test_assertclinillike", "label": "assertCLINilLike()", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "assertCLINilLike()", "community": 1, "community_name": "CLI integration tests", "source_file": "tests\\cli_mode_test.go", "file_type": "code", "degree": 3}, {"id": "harness_redis", "label": "harness_redis.go", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 35.7, "font": {"size": 12, "color": "#ffffff"}, "title": "harness_redis.go", "community": 2, "community_name": "Raw wire harness", "source_file": "tests\\harness_redis.go", "file_type": "code", "degree": 6}, {"id": "harness_redis_startserverandconnect", "label": "startServerAndConnect()", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "startServerAndConnect()", "community": 2, "community_name": "Raw wire harness", "source_file": "tests\\harness_redis.go", "file_type": "code", "degree": 2}, {"id": "harness_redis_waitforserver", "label": "waitForServer()", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "waitForServer()", "community": 2, "community_name": "Raw wire harness", "source_file": "tests\\harness_redis.go", "file_type": "code", "degree": 2}, {"id": "harness_redis_sendandreadsingleresponse", "label": "sendAndReadSingleResponse()", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "sendAndReadSingleResponse()", "community": 2, "community_name": "Raw wire harness", "source_file": "tests\\harness_redis.go", "file_type": "code", "degree": 3}, {"id": "harness_redis_encoderesparray", "label": "encodeRESPArray()", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "encodeRESPArray()", "community": 2, "community_name": "Raw wire harness", "source_file": "tests\\harness_redis.go", "file_type": "code", "degree": 2}, {"id": "harness_redis_readsingleresp", "label": "readSingleRESP()", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "readSingleRESP()", "community": 2, "community_name": "Raw wire harness", "source_file": "tests\\harness_redis.go", "file_type": "code", "degree": 2}, {"id": "integration_test", "label": "integration_test.go", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "integration_test.go", "community": 6, "community_name": "Scenarios and feature docs", "source_file": "tests\\integration_test.go", "file_type": "code", "degree": 2}, {"id": "integration_test_testredisscenarios", "label": "TestRedisScenarios()", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "TestRedisScenarios()", "community": 6, "community_name": "Scenarios and feature docs", "source_file": "tests\\integration_test.go", "file_type": "code", "degree": 1}, {"id": "readme_codecrafters_intro", "label": "Codecrafters Redis clone (Go)", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 18.6, "font": {"size": 12, "color": "#ffffff"}, "title": "Codecrafters Redis clone (Go)", "community": 7, "community_name": "README and runtime narrative", "source_file": "README.md", "file_type": "document", "degree": 2}, {"id": "readme_highlight_stack", "label": "RESP parsing and core commands", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "RESP parsing and core commands", "community": 7, "community_name": "README and runtime narrative", "source_file": "README.md", "file_type": "document", "degree": 3}, {"id": "report_overview", "label": "TCP RESP server overview", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "TCP RESP server overview", "community": 7, "community_name": "README and runtime narrative", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 3}, {"id": "report_architecture_map", "label": "Source file roles (architecture)", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Source file roles (architecture)", "community": 0, "community_name": "Server core and connections", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 7}, {"id": "report_runtime_pipeline", "label": "Five-step request pipeline", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "Five-step request pipeline", "community": 7, "community_name": "README and runtime narrative", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 3}, {"id": "report_command_surface", "label": "Implemented Redis-like commands", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 22.9, "font": {"size": 12, "color": "#ffffff"}, "title": "Implemented Redis-like commands", "community": 6, "community_name": "Scenarios and feature docs", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 3}, {"id": "report_concurrency_model", "label": "Goroutine-per-connection and RWMutex", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Goroutine-per-connection and RWMutex", "community": 7, "community_name": "README and runtime narrative", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 1}, {"id": "report_test_strategy", "label": "Wire integration and CLI tests", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 27.1, "font": {"size": 12, "color": "#ffffff"}, "title": "Wire integration and CLI tests", "community": 6, "community_name": "Scenarios and feature docs", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 4}, {"id": "report_future_scope", "label": "Features not yet implemented", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 14.3, "font": {"size": 0, "color": "#ffffff"}, "title": "Features not yet implemented", "community": 6, "community_name": "Scenarios and feature docs", "source_file": "docs\\PROJECT_REPORT.md", "file_type": "document", "degree": 1}];
+const RAW_EDGES = [{"from": "client_request_handler", "to": "client_request_handler_handleclient", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "client_request_handler", "to": "report_architecture_map", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands", "to": "commands_handlecommand", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands", "to": "commands_handleset", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands", "to": "commands_handleget", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands", "to": "commands_parseexpirymillis", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands", "to": "report_architecture_map", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands", "to": "readme_highlight_stack", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "commands_handlecommand", "to": "commands_handleset", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands_handlecommand", "to": "commands_handleget", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "commands_handleset", "to": "commands_parseexpirymillis", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "connection", "to": "connection_bind", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "connection", "to": "connection_handleconnections", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "connection", "to": "report_architecture_map", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "main", "to": "app_storeentry", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "main", "to": "main_main", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "main", "to": "report_architecture_map", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser", "to": "parser_parsearraycontent", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser", "to": "parser_readbulkstring", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser", "to": "parser_readint", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser", "to": "parser_readcrlf", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser", "to": "report_architecture_map", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser", "to": "readme_highlight_stack", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "parser_parsearraycontent", "to": "parser_readint", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser_parsearraycontent", "to": "parser_readbulkstring", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser_readbulkstring", "to": "parser_readint", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "parser_readbulkstring", "to": "parser_readcrlf", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "resp_writer", "to": "resp_writer_writesimplestring", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "resp_writer", "to": "resp_writer_writebulkstring", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "resp_writer", "to": "resp_writer_writewrongargcount", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "resp_writer", "to": "resp_writer_writeerror", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "resp_writer", "to": "report_architecture_map", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "cli_mode_test_testrediscliflow", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "cli_mode_test_waitforserverport", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "cli_mode_test_runrediscli", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "cli_mode_test_assertcliequal", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "cli_mode_test_assertclicontains", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "cli_mode_test_assertclinillike", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test", "to": "report_test_strategy", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_testrediscliflow", "to": "cli_mode_test_waitforserverport", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_testrediscliflow", "to": "cli_mode_test_assertcliequal", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_testrediscliflow", "to": "cli_mode_test_assertclicontains", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_testrediscliflow", "to": "cli_mode_test_assertclinillike", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_runrediscli", "to": "cli_mode_test_assertcliequal", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_runrediscli", "to": "cli_mode_test_assertclicontains", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "cli_mode_test_runrediscli", "to": "cli_mode_test_assertclinillike", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis", "to": "harness_redis_startserverandconnect", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis", "to": "harness_redis_waitforserver", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis", "to": "harness_redis_sendandreadsingleresponse", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis", "to": "harness_redis_encoderesparray", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis", "to": "harness_redis_readsingleresp", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis", "to": "report_test_strategy", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis_startserverandconnect", "to": "harness_redis_waitforserver", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis_sendandreadsingleresponse", "to": "harness_redis_encoderesparray", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "harness_redis_sendandreadsingleresponse", "to": "harness_redis_readsingleresp", "label": "calls", "title": "calls [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "integration_test", "to": "integration_test_testredisscenarios", "label": "contains", "title": "contains [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "integration_test", "to": "report_test_strategy", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_codecrafters_intro", "to": "readme_highlight_stack", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "readme_codecrafters_intro", "to": "report_overview", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "report_overview", "to": "report_architecture_map", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "report_overview", "to": "report_runtime_pipeline", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "report_runtime_pipeline", "to": "report_command_surface", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "report_runtime_pipeline", "to": "report_concurrency_model", "label": "rationale_for", "title": "rationale_for [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "report_command_surface", "to": "report_test_strategy", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "report_command_surface", "to": "report_future_scope", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}];
+const LEGEND = [{"cid": 0, "color": "#4E79A7", "label": "Server core and connections", "count": 9}, {"cid": 1, "color": "#F28E2B", "label": "CLI integration tests", "count": 7}, {"cid": 2, "color": "#E15759", "label": "Raw wire harness", "count": 6}, {"cid": 3, "color": "#76B7B2", "label": "Command dispatch", "count": 5}, {"cid": 4, "color": "#59A14F", "label": "RESP parsing", "count": 5}, {"cid": 5, "color": "#EDC948", "label": "RESP encoding", "count": 5}, {"cid": 6, "color": "#B07AA1", "label": "Scenarios and feature docs", "count": 5}, {"cid": 7, "color": "#FF9DA7", "label": "README and runtime narrative", "count": 5}];
+
+// HTML-escape helper — prevents XSS when injecting graph data into innerHTML
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Build vis datasets
+const nodesDS = new vis.DataSet(RAW_NODES.map(n => ({
+  id: n.id, label: n.label, color: n.color, size: n.size,
+  font: n.font, title: n.title,
+  _community: n.community, _community_name: n.community_name,
+  _source_file: n.source_file, _file_type: n.file_type, _degree: n.degree,
+})));
+
+const edgesDS = new vis.DataSet(RAW_EDGES.map((e, i) => ({
+  id: i, from: e.from, to: e.to,
+  label: '',
+  title: e.title,
+  dashes: e.dashes,
+  width: e.width,
+  color: e.color,
+  arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+})));
+
+const container = document.getElementById('graph');
+const network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, {
+  physics: {
+    enabled: true,
+    solver: 'forceAtlas2Based',
+    forceAtlas2Based: {
+      gravitationalConstant: -60,
+      centralGravity: 0.005,
+      springLength: 120,
+      springConstant: 0.08,
+      damping: 0.4,
+      avoidOverlap: 0.8,
+    },
+    stabilization: { iterations: 200, fit: true },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+    hideEdgesOnDrag: true,
+    navigationButtons: false,
+    keyboard: false,
+  },
+  nodes: { shape: 'dot', borderWidth: 1.5 },
+  edges: { smooth: { type: 'continuous', roundness: 0.2 }, selectionWidth: 3 },
+});
+
+network.once('stabilizationIterationsDone', () => {
+  network.setOptions({ physics: { enabled: false } });
+});
+
+function showInfo(nodeId) {
+  const n = nodesDS.get(nodeId);
+  if (!n) return;
+  const neighborIds = network.getConnectedNodes(nodeId);
+  const neighborItems = neighborIds.map(nid => {
+    const nb = nodesDS.get(nid);
+    const color = nb ? nb.color.background : '#555';
+    return `<span class="neighbor-link" style="border-left-color:${esc(color)}" onclick="focusNode(${JSON.stringify(nid)})">${esc(nb ? nb.label : nid)}</span>`;
+  }).join('');
+  document.getElementById('info-content').innerHTML = `
+    <div class="field"><b>${esc(n.label)}</b></div>
+    <div class="field">Type: ${esc(n._file_type || 'unknown')}</div>
+    <div class="field">Community: ${esc(n._community_name)}</div>
+    <div class="field">Source: ${esc(n._source_file || '-')}</div>
+    <div class="field">Degree: ${n._degree}</div>
+    ${neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${neighborIds.length})</div><div id="neighbors-list">${neighborItems}</div>` : ''}
+  `;
+}
+
+function focusNode(nodeId) {
+  network.focus(nodeId, { scale: 1.4, animation: true });
+  network.selectNodes([nodeId]);
+  showInfo(nodeId);
+}
+
+// Track hovered node — hover detection is more reliable than click params
+let hoveredNodeId = null;
+network.on('hoverNode', params => {
+  hoveredNodeId = params.node;
+  container.style.cursor = 'pointer';
+});
+network.on('blurNode', () => {
+  hoveredNodeId = null;
+  container.style.cursor = 'default';
+});
+container.addEventListener('click', () => {
+  if (hoveredNodeId !== null) {
+    showInfo(hoveredNodeId);
+    network.selectNodes([hoveredNodeId]);
+  }
+});
+network.on('click', params => {
+  if (params.nodes.length > 0) {
+    showInfo(params.nodes[0]);
+  } else if (hoveredNodeId === null) {
+    document.getElementById('info-content').innerHTML = '<span class="empty">Click a node to inspect it</span>';
+  }
+});
+
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('search-results');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  searchResults.innerHTML = '';
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const matches = RAW_NODES.filter(n => n.label.toLowerCase().includes(q)).slice(0, 20);
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.style.display = 'block';
+  matches.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'search-item';
+    el.textContent = n.label;
+    el.style.borderLeft = `3px solid ${n.color.background}`;
+    el.style.paddingLeft = '8px';
+    el.onclick = () => {
+      network.focus(n.id, { scale: 1.5, animation: true });
+      network.selectNodes([n.id]);
+      showInfo(n.id);
+      searchResults.style.display = 'none';
+      searchInput.value = '';
+    };
+    searchResults.appendChild(el);
+  });
+});
+document.addEventListener('click', e => {
+  if (!searchResults.contains(e.target) && e.target !== searchInput)
+    searchResults.style.display = 'none';
+});
+
+const hiddenCommunities = new Set();
+const legendEl = document.getElementById('legend');
+LEGEND.forEach(c => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `<div class="legend-dot" style="background:${c.color}"></div>
+    <span class="legend-label">${c.label}</span>
+    <span class="legend-count">${c.count}</span>`;
+  item.onclick = () => {
+    if (hiddenCommunities.has(c.cid)) {
+      hiddenCommunities.delete(c.cid);
+      item.classList.remove('dimmed');
+    } else {
+      hiddenCommunities.add(c.cid);
+      item.classList.add('dimmed');
+    }
+    const updates = RAW_NODES
+      .filter(n => n.community === c.cid)
+      .map(n => ({ id: n.id, hidden: hiddenCommunities.has(c.cid) }));
+    nodesDS.update(updates);
+  };
+  legendEl.appendChild(item);
+});
+</script>
+<script>
+// Render hyperedges as shaded regions
+const hyperedges = [{"id": "hyper_app_package_layout", "label": "app/ server components", "nodes": ["main", "connection", "client_request_handler", "parser", "commands", "resp_writer"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs\\PROJECT_REPORT.md"}, {"id": "hyper_test_modes", "label": "tests/ verification modes", "nodes": ["integration_test", "harness_redis", "cli_mode_test"], "relation": "participate_in", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs\\PROJECT_REPORT.md"}];
+function drawHyperedges() {
+    const canvas = network.canvas.frame.canvas;
+    const ctx = canvas.getContext('2d');
+    hyperedges.forEach(h => {
+        const positions = h.nodes
+            .map(nid => network.getPositions([nid])[nid])
+            .filter(p => p !== undefined);
+        if (positions.length < 2) return;
+        // Draw convex hull as filled polygon
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#6366f1';
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        const scale = network.getScale();
+        const offset = network.getViewPosition();
+        const toCanvas = (p) => ({
+            x: (p.x - offset.x) * scale + canvas.width / 2,
+            y: (p.y - offset.y) * scale + canvas.height / 2
+        });
+        const pts = positions.map(toCanvas);
+        // Expand hull slightly
+        const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
+        const cy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+        const expanded = pts.map(p => ({
+            x: cx + (p.x - cx) * 1.15,
+            y: cy + (p.y - cy) * 1.15
+        }));
+        ctx.moveTo(expanded[0].x, expanded[0].y);
+        expanded.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+        // Label
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(h.label, cx, cy - 5);
+        ctx.restore();
+    });
+}
+network.on('afterDrawing', drawHyperedges);
+</script>
+</body>
+</html>

@@ -1,0 +1,1264 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "hyper_app_package_layout",
+        "label": "app/ server components",
+        "nodes": [
+          "main",
+          "connection",
+          "client_request_handler",
+          "parser",
+          "commands",
+          "resp_writer"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "docs\\PROJECT_REPORT.md"
+      },
+      {
+        "id": "hyper_test_modes",
+        "label": "tests/ verification modes",
+        "nodes": [
+          "integration_test",
+          "harness_redis",
+          "cli_mode_test"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "docs\\PROJECT_REPORT.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "client_request_handler.go",
+      "file_type": "code",
+      "source_file": "app\\client_request_handler.go",
+      "source_location": "L1",
+      "id": "client_request_handler",
+      "community": 0
+    },
+    {
+      "label": "handleClient()",
+      "file_type": "code",
+      "source_file": "app\\client_request_handler.go",
+      "source_location": "L13",
+      "id": "client_request_handler_handleclient",
+      "community": 0
+    },
+    {
+      "label": "commands.go",
+      "file_type": "code",
+      "source_file": "app\\commands.go",
+      "source_location": "L1",
+      "id": "commands",
+      "community": 3
+    },
+    {
+      "label": "handleCommand()",
+      "file_type": "code",
+      "source_file": "app\\commands.go",
+      "source_location": "L20",
+      "id": "commands_handlecommand",
+      "community": 3
+    },
+    {
+      "label": "handleSet()",
+      "file_type": "code",
+      "source_file": "app\\commands.go",
+      "source_location": "L44",
+      "id": "commands_handleset",
+      "community": 3
+    },
+    {
+      "label": "handleGet()",
+      "file_type": "code",
+      "source_file": "app\\commands.go",
+      "source_location": "L69",
+      "id": "commands_handleget",
+      "community": 3
+    },
+    {
+      "label": "parseExpiryMillis()",
+      "file_type": "code",
+      "source_file": "app\\commands.go",
+      "source_location": "L108",
+      "id": "commands_parseexpirymillis",
+      "community": 3
+    },
+    {
+      "label": "connection.go",
+      "file_type": "code",
+      "source_file": "app\\connection.go",
+      "source_location": "L1",
+      "id": "connection",
+      "community": 0
+    },
+    {
+      "label": "bind()",
+      "file_type": "code",
+      "source_file": "app\\connection.go",
+      "source_location": "L9",
+      "id": "connection_bind",
+      "community": 0
+    },
+    {
+      "label": "handleConnections()",
+      "file_type": "code",
+      "source_file": "app\\connection.go",
+      "source_location": "L19",
+      "id": "connection_handleconnections",
+      "community": 0
+    },
+    {
+      "label": "main.go",
+      "file_type": "code",
+      "source_file": "app\\main.go",
+      "source_location": "L1",
+      "id": "main",
+      "community": 0
+    },
+    {
+      "label": "storeEntry",
+      "file_type": "code",
+      "source_file": "app\\main.go",
+      "source_location": "L8",
+      "id": "app_storeentry",
+      "community": 0
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "app\\main.go",
+      "source_location": "L21",
+      "id": "main_main",
+      "community": 0
+    },
+    {
+      "label": "parser.go",
+      "file_type": "code",
+      "source_file": "app\\parser.go",
+      "source_location": "L1",
+      "id": "parser",
+      "community": 4
+    },
+    {
+      "label": "parseArrayContent()",
+      "file_type": "code",
+      "source_file": "app\\parser.go",
+      "source_location": "L11",
+      "id": "parser_parsearraycontent",
+      "community": 4
+    },
+    {
+      "label": "readBulkString()",
+      "file_type": "code",
+      "source_file": "app\\parser.go",
+      "source_location": "L33",
+      "id": "parser_readbulkstring",
+      "community": 4
+    },
+    {
+      "label": "readInt()",
+      "file_type": "code",
+      "source_file": "app\\parser.go",
+      "source_location": "L62",
+      "id": "parser_readint",
+      "community": 4
+    },
+    {
+      "label": "readCRLF()",
+      "file_type": "code",
+      "source_file": "app\\parser.go",
+      "source_location": "L70",
+      "id": "parser_readcrlf",
+      "community": 4
+    },
+    {
+      "label": "resp_writer.go",
+      "file_type": "code",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L1",
+      "id": "resp_writer",
+      "community": 5
+    },
+    {
+      "label": "writeSimpleString()",
+      "file_type": "code",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L8",
+      "id": "resp_writer_writesimplestring",
+      "community": 5
+    },
+    {
+      "label": "writeBulkString()",
+      "file_type": "code",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L12",
+      "id": "resp_writer_writebulkstring",
+      "community": 5
+    },
+    {
+      "label": "writeWrongArgCount()",
+      "file_type": "code",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L16",
+      "id": "resp_writer_writewrongargcount",
+      "community": 5
+    },
+    {
+      "label": "writeError()",
+      "file_type": "code",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L20",
+      "id": "resp_writer_writeerror",
+      "community": 5
+    },
+    {
+      "label": "cli_mode_test.go",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L1",
+      "id": "cli_mode_test",
+      "community": 1
+    },
+    {
+      "label": "TestRedisCLIFlow()",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L11",
+      "id": "cli_mode_test_testrediscliflow",
+      "community": 1
+    },
+    {
+      "label": "waitForServerPort()",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L56",
+      "id": "cli_mode_test_waitforserverport",
+      "community": 1
+    },
+    {
+      "label": "runRedisCLI()",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L70",
+      "id": "cli_mode_test_runrediscli",
+      "community": 1
+    },
+    {
+      "label": "assertCLIEqual()",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L81",
+      "id": "cli_mode_test_assertcliequal",
+      "community": 1
+    },
+    {
+      "label": "assertCLIContains()",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L89",
+      "id": "cli_mode_test_assertclicontains",
+      "community": 1
+    },
+    {
+      "label": "assertCLINilLike()",
+      "file_type": "code",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L97",
+      "id": "cli_mode_test_assertclinillike",
+      "community": 1
+    },
+    {
+      "label": "harness_redis.go",
+      "file_type": "code",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L1",
+      "id": "harness_redis",
+      "community": 2
+    },
+    {
+      "label": "startServerAndConnect()",
+      "file_type": "code",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L15",
+      "id": "harness_redis_startserverandconnect",
+      "community": 2
+    },
+    {
+      "label": "waitForServer()",
+      "file_type": "code",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L35",
+      "id": "harness_redis_waitforserver",
+      "community": 2
+    },
+    {
+      "label": "sendAndReadSingleResponse()",
+      "file_type": "code",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L49",
+      "id": "harness_redis_sendandreadsingleresponse",
+      "community": 2
+    },
+    {
+      "label": "encodeRESPArray()",
+      "file_type": "code",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L57",
+      "id": "harness_redis_encoderesparray",
+      "community": 2
+    },
+    {
+      "label": "readSingleRESP()",
+      "file_type": "code",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L66",
+      "id": "harness_redis_readsingleresp",
+      "community": 2
+    },
+    {
+      "label": "integration_test.go",
+      "file_type": "code",
+      "source_file": "tests\\integration_test.go",
+      "source_location": "L1",
+      "id": "integration_test",
+      "community": 6
+    },
+    {
+      "label": "TestRedisScenarios()",
+      "file_type": "code",
+      "source_file": "tests\\integration_test.go",
+      "source_location": "L10",
+      "id": "integration_test_testredisscenarios",
+      "community": 6
+    },
+    {
+      "label": "Codecrafters Redis clone (Go)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L3-L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_codecrafters_intro",
+      "community": 7
+    },
+    {
+      "label": "RESP parsing and core commands",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L9-L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_highlight_stack",
+      "community": 7
+    },
+    {
+      "label": "TCP RESP server overview",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L4-L7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_overview",
+      "community": 7
+    },
+    {
+      "label": "Source file roles (architecture)",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L11-L16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_architecture_map",
+      "community": 0
+    },
+    {
+      "label": "Five-step request pipeline",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L18-L24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_runtime_pipeline",
+      "community": 7
+    },
+    {
+      "label": "Implemented Redis-like commands",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L28-L35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_command_surface",
+      "community": 6
+    },
+    {
+      "label": "Goroutine-per-connection and RWMutex",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L39-L42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_concurrency_model",
+      "community": 7
+    },
+    {
+      "label": "Wire integration and CLI tests",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L46-L59",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_test_strategy",
+      "community": 6
+    },
+    {
+      "label": "Features not yet implemented",
+      "file_type": "document",
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L61-L70",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "report_future_scope",
+      "community": 6
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\client_request_handler.go",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_src": "client_request_handler",
+      "_tgt": "client_request_handler_handleclient",
+      "source": "client_request_handler",
+      "target": "client_request_handler_handleclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "client_request_handler",
+      "source": "client_request_handler",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "commands",
+      "_tgt": "commands_handlecommand",
+      "source": "commands",
+      "target": "commands_handlecommand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_src": "commands",
+      "_tgt": "commands_handleset",
+      "source": "commands",
+      "target": "commands_handleset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_src": "commands",
+      "_tgt": "commands_handleget",
+      "source": "commands",
+      "target": "commands_handleget",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L108",
+      "weight": 1.0,
+      "_src": "commands",
+      "_tgt": "commands_parseexpirymillis",
+      "source": "commands",
+      "target": "commands_parseexpirymillis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "commands",
+      "source": "commands",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.72,
+      "source_file": "README.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "readme_highlight_stack",
+      "_tgt": "commands",
+      "source": "commands",
+      "target": "readme_highlight_stack"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_src": "commands_handlecommand",
+      "_tgt": "commands_handleset",
+      "source": "commands_handlecommand",
+      "target": "commands_handleset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_src": "commands_handlecommand",
+      "_tgt": "commands_handleget",
+      "source": "commands_handlecommand",
+      "target": "commands_handleget",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\commands.go",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_src": "commands_handleset",
+      "_tgt": "commands_parseexpirymillis",
+      "source": "commands_handleset",
+      "target": "commands_parseexpirymillis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\connection.go",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_src": "connection",
+      "_tgt": "connection_bind",
+      "source": "connection",
+      "target": "connection_bind",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\connection.go",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_src": "connection",
+      "_tgt": "connection_handleconnections",
+      "source": "connection",
+      "target": "connection_handleconnections",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "connection",
+      "source": "connection",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\main.go",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_src": "main",
+      "_tgt": "app_storeentry",
+      "source": "main",
+      "target": "app_storeentry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\main.go",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_src": "main",
+      "_tgt": "main_main",
+      "source": "main",
+      "target": "main_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "main",
+      "source": "main",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "parser",
+      "_tgt": "parser_parsearraycontent",
+      "source": "parser",
+      "target": "parser_parsearraycontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_src": "parser",
+      "_tgt": "parser_readbulkstring",
+      "source": "parser",
+      "target": "parser_readbulkstring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_src": "parser",
+      "_tgt": "parser_readint",
+      "source": "parser",
+      "target": "parser_readint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_src": "parser",
+      "_tgt": "parser_readcrlf",
+      "source": "parser",
+      "target": "parser_readcrlf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "parser",
+      "source": "parser",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.72,
+      "source_file": "README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_src": "readme_highlight_stack",
+      "_tgt": "parser",
+      "source": "parser",
+      "target": "readme_highlight_stack"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "parser_parsearraycontent",
+      "_tgt": "parser_readint",
+      "source": "parser_parsearraycontent",
+      "target": "parser_readint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "parser_parsearraycontent",
+      "_tgt": "parser_readbulkstring",
+      "source": "parser_parsearraycontent",
+      "target": "parser_readbulkstring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_src": "parser_readbulkstring",
+      "_tgt": "parser_readint",
+      "source": "parser_readbulkstring",
+      "target": "parser_readint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\parser.go",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_src": "parser_readbulkstring",
+      "_tgt": "parser_readcrlf",
+      "source": "parser_readbulkstring",
+      "target": "parser_readcrlf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_src": "resp_writer",
+      "_tgt": "resp_writer_writesimplestring",
+      "source": "resp_writer",
+      "target": "resp_writer_writesimplestring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_src": "resp_writer",
+      "_tgt": "resp_writer_writebulkstring",
+      "source": "resp_writer",
+      "target": "resp_writer_writebulkstring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "resp_writer",
+      "_tgt": "resp_writer_writewrongargcount",
+      "source": "resp_writer",
+      "target": "resp_writer_writewrongargcount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app\\resp_writer.go",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "resp_writer",
+      "_tgt": "resp_writer_writeerror",
+      "source": "resp_writer",
+      "target": "resp_writer_writeerror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "resp_writer",
+      "source": "resp_writer",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "cli_mode_test",
+      "_tgt": "cli_mode_test_testrediscliflow",
+      "source": "cli_mode_test",
+      "target": "cli_mode_test_testrediscliflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_src": "cli_mode_test",
+      "_tgt": "cli_mode_test_waitforserverport",
+      "source": "cli_mode_test",
+      "target": "cli_mode_test_waitforserverport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_src": "cli_mode_test",
+      "_tgt": "cli_mode_test_runrediscli",
+      "source": "cli_mode_test",
+      "target": "cli_mode_test_runrediscli",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_src": "cli_mode_test",
+      "_tgt": "cli_mode_test_assertcliequal",
+      "source": "cli_mode_test",
+      "target": "cli_mode_test_assertcliequal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_src": "cli_mode_test",
+      "_tgt": "cli_mode_test_assertclicontains",
+      "source": "cli_mode_test",
+      "target": "cli_mode_test_assertclicontains",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_src": "cli_mode_test",
+      "_tgt": "cli_mode_test_assertclinillike",
+      "source": "cli_mode_test",
+      "target": "cli_mode_test_assertclinillike",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_src": "report_test_strategy",
+      "_tgt": "cli_mode_test",
+      "source": "cli_mode_test",
+      "target": "report_test_strategy"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_src": "cli_mode_test_testrediscliflow",
+      "_tgt": "cli_mode_test_waitforserverport",
+      "source": "cli_mode_test_testrediscliflow",
+      "target": "cli_mode_test_waitforserverport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_src": "cli_mode_test_testrediscliflow",
+      "_tgt": "cli_mode_test_assertcliequal",
+      "source": "cli_mode_test_testrediscliflow",
+      "target": "cli_mode_test_assertcliequal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_src": "cli_mode_test_testrediscliflow",
+      "_tgt": "cli_mode_test_assertclicontains",
+      "source": "cli_mode_test_testrediscliflow",
+      "target": "cli_mode_test_assertclicontains",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_src": "cli_mode_test_testrediscliflow",
+      "_tgt": "cli_mode_test_assertclinillike",
+      "source": "cli_mode_test_testrediscliflow",
+      "target": "cli_mode_test_assertclinillike",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_src": "cli_mode_test_assertcliequal",
+      "_tgt": "cli_mode_test_runrediscli",
+      "source": "cli_mode_test_runrediscli",
+      "target": "cli_mode_test_assertcliequal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_src": "cli_mode_test_assertclicontains",
+      "_tgt": "cli_mode_test_runrediscli",
+      "source": "cli_mode_test_runrediscli",
+      "target": "cli_mode_test_assertclicontains",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\cli_mode_test.go",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_src": "cli_mode_test_assertclinillike",
+      "_tgt": "cli_mode_test_runrediscli",
+      "source": "cli_mode_test_runrediscli",
+      "target": "cli_mode_test_assertclinillike",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "harness_redis",
+      "_tgt": "harness_redis_startserverandconnect",
+      "source": "harness_redis",
+      "target": "harness_redis_startserverandconnect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_src": "harness_redis",
+      "_tgt": "harness_redis_waitforserver",
+      "source": "harness_redis",
+      "target": "harness_redis_waitforserver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_src": "harness_redis",
+      "_tgt": "harness_redis_sendandreadsingleresponse",
+      "source": "harness_redis",
+      "target": "harness_redis_sendandreadsingleresponse",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_src": "harness_redis",
+      "_tgt": "harness_redis_encoderesparray",
+      "source": "harness_redis",
+      "target": "harness_redis_encoderesparray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_src": "harness_redis",
+      "_tgt": "harness_redis_readsingleresp",
+      "source": "harness_redis",
+      "target": "harness_redis_readsingleresp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_src": "report_test_strategy",
+      "_tgt": "harness_redis",
+      "source": "harness_redis",
+      "target": "report_test_strategy"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_src": "harness_redis_startserverandconnect",
+      "_tgt": "harness_redis_waitforserver",
+      "source": "harness_redis_startserverandconnect",
+      "target": "harness_redis_waitforserver",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_src": "harness_redis_sendandreadsingleresponse",
+      "_tgt": "harness_redis_encoderesparray",
+      "source": "harness_redis_sendandreadsingleresponse",
+      "target": "harness_redis_encoderesparray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\harness_redis.go",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_src": "harness_redis_sendandreadsingleresponse",
+      "_tgt": "harness_redis_readsingleresp",
+      "source": "harness_redis_sendandreadsingleresponse",
+      "target": "harness_redis_readsingleresp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests\\integration_test.go",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_src": "integration_test",
+      "_tgt": "integration_test_testredisscenarios",
+      "source": "integration_test",
+      "target": "integration_test_testredisscenarios",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L49-L50",
+      "weight": 1.0,
+      "_src": "report_test_strategy",
+      "_tgt": "integration_test",
+      "source": "integration_test",
+      "target": "report_test_strategy"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "L9-L11",
+      "weight": 1.0,
+      "_src": "readme_highlight_stack",
+      "_tgt": "readme_codecrafters_intro",
+      "source": "readme_codecrafters_intro",
+      "target": "readme_highlight_stack"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "README.md",
+      "source_location": "L3-L7",
+      "weight": 1.0,
+      "_src": "readme_codecrafters_intro",
+      "_tgt": "report_overview",
+      "source": "readme_codecrafters_intro",
+      "target": "report_overview"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L9-L16",
+      "weight": 1.0,
+      "_src": "report_architecture_map",
+      "_tgt": "report_overview",
+      "source": "report_overview",
+      "target": "report_architecture_map"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L18-L24",
+      "weight": 1.0,
+      "_src": "report_runtime_pipeline",
+      "_tgt": "report_overview",
+      "source": "report_overview",
+      "target": "report_runtime_pipeline"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L26-L35",
+      "weight": 1.0,
+      "_src": "report_command_surface",
+      "_tgt": "report_runtime_pipeline",
+      "source": "report_runtime_pipeline",
+      "target": "report_command_surface"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.78,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L37-L42",
+      "weight": 1.0,
+      "_src": "report_concurrency_model",
+      "_tgt": "report_runtime_pipeline",
+      "source": "report_runtime_pipeline",
+      "target": "report_concurrency_model"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L44-L59",
+      "weight": 1.0,
+      "_src": "report_test_strategy",
+      "_tgt": "report_command_surface",
+      "source": "report_command_surface",
+      "target": "report_test_strategy"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md",
+      "source_location": "L61-L70",
+      "weight": 1.0,
+      "_src": "report_future_scope",
+      "_tgt": "report_command_surface",
+      "source": "report_command_surface",
+      "target": "report_future_scope"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "hyper_app_package_layout",
+      "label": "app/ server components",
+      "nodes": [
+        "main",
+        "connection",
+        "client_request_handler",
+        "parser",
+        "commands",
+        "resp_writer"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md"
+    },
+    {
+      "id": "hyper_test_modes",
+      "label": "tests/ verification modes",
+      "nodes": [
+        "integration_test",
+        "harness_redis",
+        "cli_mode_test"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs\\PROJECT_REPORT.md"
+    }
+  ]
+}

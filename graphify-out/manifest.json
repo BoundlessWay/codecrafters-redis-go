@@ -1,0 +1,13 @@
+{
+  "app\\client_request_handler.go": 1775825145.0512638,
+  "app\\commands.go": 1775825897.9318123,
+  "app\\connection.go": 1775816326.7134812,
+  "app\\main.go": 1775825800.552957,
+  "app\\parser.go": 1775825143.5401406,
+  "app\\resp_writer.go": 1775825888.0762475,
+  "tests\\cli_mode_test.go": 1775827991.8231156,
+  "tests\\harness_redis.go": 1775827540.8546388,
+  "tests\\integration_test.go": 1775827530.2434435,
+  "README.md": 1775832609.028901,
+  "docs\\PROJECT_REPORT.md": 1775830417.0848732
+}

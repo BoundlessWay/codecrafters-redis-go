@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "command": "python .cursor/hooks/graphify_post_edit.py",
+        "matcher": "Write|StrReplace",
+        "timeout": 5
+      }
+    ]
+  }
+}

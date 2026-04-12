@@ -1,0 +1,15 @@
+---
+description: Use graphify-out for structure, dependencies, and cross-file questions
+alwaysApply: true
+---
+
+# Graphify knowledge graph
+
+When the user asks about **architecture**, **how modules connect**, **where something lives**, **tests vs app layout**, or **dependencies across files**:
+
+1. If `graphify-out/GRAPH_REPORT.md` exists, **read it first** (summary, god nodes, communities, suggested questions).
+2. For **exact edges**, **relations**, **confidence (EXTRACTED vs INFERRED)**, or **`source_file`**, use `graphify-out/graph.json`.
+3. Prefer citing **graph-backed** links when they match the question; do not invent cross-file relationships if the graph does not support them.
+4. If the graph is **missing or clearly stale** after substantive edits under `app/`, `tests/`, or `docs/`, say so and offer to **re-run graphify** on the repo root.
+
+Optional: `.graphify_python` is only a local Python path hint for scripts; it is safe to delete or add to `.gitignore`.
